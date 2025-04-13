@@ -10,7 +10,6 @@ import { MarketInterface } from 'ccxt';
 export async function markets(exchangeId: string) {
   const exchange = getExchange(exchangeId);
   const markets = await exchange.loadMarkets();
-  const activeMarkets = Object.keys(markets).filter(key => markets[key]?.active);
 
   const table = new Table({
     head: [
@@ -21,8 +20,9 @@ export async function markets(exchangeId: string) {
     ]
   });
 
-  Object.keys(activeMarkets).forEach(key => {
+  Object.keys(markets).forEach(key => {
     const market = markets[key] as MarketInterface;
+    if (!market.active) return;
     table.push([
       key,
       market.active,
@@ -33,5 +33,5 @@ export async function markets(exchangeId: string) {
   
   console.log(chalk.cyan(`Markets suported by ${exchangeId}:`));
   console.log(table.toString());
-  console.log(`Number of active markets: ${Object.keys(activeMarkets).length}`);
+  console.log(`Number of active markets: ${table.length}`);
 }
