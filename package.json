@@ -1,5 +1,5 @@
 {
-  "name": "cctx-cli",
+  "name": "ccxt-cli",
   "version": "1.0.0",
   "description": "Interact with Binance and other Crypto Exchanges via your Terminal",
   "main": "dist/index.js",
@@ -15,21 +15,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coccoinomane/cctx-cli.git"
+    "url": "git+https://github.com/coccoinomane/ccxt-cli.git"
   },
   "keywords": [
     "crypto",
     "cex",
-    "cctx",
+    "ccxt",
     "cli",
     "futures"
   ],
   "author": "coccoinomane",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/coccoinomane/cctx-cli/issues"
-  },
-  "homepage": "https://github.com/coccoinomane/cctx-cli#readme",
+  "homepage": "https://github.com/coccoinomane/ccxt-cli#readme",
   "dependencies": {
     "ccxt": "^4.4.74",
     "chalk": "^4.1.2",
