@@ -96,9 +96,9 @@ orderCommand
   .description('Create a new order')
   .argument('<exchange>', 'Exchange ID')
   .argument('<symbol>', 'Trading pair symbol')
-  .option('-t, --type <type>', 'Order type (limit/market)', 'limit')
-  .option('-s, --side <side>', 'Order side (buy/sell)', 'buy')
-  .option('-a, --amount <amount>', 'Order amount')
+  .requiredOption('-a, --amount <amount>', 'Order amount')
+  .requiredOption('-t, --type <type>', 'Order type (limit/market)', 'limit')
+  .requiredOption('-s, --side <side>', 'Order side (buy/sell)', 'buy')
   .option('-p, --price <price>', 'Order price (for limit orders)')
   .option('-f, --force', 'Skip confirmation prompt', false)
   .action((exchange, symbol, options) => orderCreate(exchange, symbol, options));

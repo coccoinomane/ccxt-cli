@@ -6,3 +6,6 @@
 - Allow to customize encryption key
 - Futures markets support
 - Withdraw to specific network
+
+# Minor
+- Auto fix linting

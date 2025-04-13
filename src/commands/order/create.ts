@@ -3,8 +3,8 @@ import { getExchangeWithAPI } from '../../utils/exchange';
 import { confirmAction } from '../../utils/confirmation';
 
 interface CreateOrderOptions {
-  type?: string;
-  side?: string;
+  type: string;
+  side: string;
   amount: string;
   price?: string;
   force?: boolean;
@@ -21,11 +21,12 @@ export async function create(
   try {
     const exchange = getExchangeWithAPI(exchangeId);
     
-    const { type = 'limit', side = 'buy', amount, price, force } = options;
-    
+    const { type, side, amount, price, force } = options;
+
     // For market orders, make sure user understands price is not specified
-    if (type === 'market' && !force) {
-      console.log(chalk.yellow('Warning: Market orders execute at the current market price, which may differ from what you expect.'));
+    if (type === 'market' && price) {
+      console.log(chalk.red('Cannot specify price for market orders.'));
+      return;
     }
     
     // Confirm order creation
