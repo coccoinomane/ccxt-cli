@@ -4,20 +4,30 @@ A command-line interface for the [CCXT](https://github.com/ccxt/ccxt) cryptocurr
 
 ## Features
 
-- Check your balance on multiple CEXs
-- Place market and limit orders on multiple CEXs
+- Support for most CEXs
+- Check your balance
+- Place market and limit orders
 - Human-readable output for commands
 - Confirmation prompts for potentially destructive actions
 - Clear warnings about exchange requirements (e.g., address whitelisting)
 - Secure storage of API keys for exchanges
 
-## Usage
+## Quick Start
 
-1. Clone the repository: `git clone https://github.com/coccoinomane/ccxt-cli.git`
-2. Install dependencies: `npm install`
-3. Run the CLI with `npm run ccxt-cli -- <args>`
+1. `git clone https://github.com/coccoinomane/ccxt-cli.git`
+2. `cd ccxt-cli`
+3. `npm install`
+4. `npm link`
+5. Run the CLI with `ccxt-cli <args>`
 
-## Available Commands
+## Development
+
+To see the changes you make to the code take effect, you can either:
+
+- build and run the CLI with `npm run build && ccxt-cli <args>`, or
+- run the shorthand command `npm run ccxt-cli -- <args>`.
+
+## Available Commands
 
 ### Market Data (no API keys required)
 
