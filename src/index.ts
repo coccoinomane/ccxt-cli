@@ -10,6 +10,7 @@ import { markets as marketMarkets } from './commands/market/markets';
 import { ticker as marketTicker } from './commands/market/ticker';
 import { withdraw as accountWithdraw } from './commands/account/withdraw';
 import { create as orderCreate } from './commands/order/create';
+import { open as orderListOpen } from './commands/order/list/open';
 import { list as exchangesList } from './commands/exchanges/list';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
 import { unsupported as exchangesUnsupported } from './commands/exchanges/unsupported';
@@ -105,8 +106,18 @@ orderCommand
   .option('-f, --force', 'Skip confirmation prompt', false)
   .action((exchange, symbol, options) => orderCreate(exchange, symbol, options));
 
-// Exchanges commands
+// Add list subcommand to order
+const orderListCommand = orderCommand
+  .command('list')
+  .description('List orders');
 
+orderListCommand
+  .command('open')
+  .description('List open orders')
+  .argument('<exchange>', 'Exchange ID')
+  .action(orderListOpen);
+
+// Exchanges commands
 const exchangesCommand = program
   .command('exchanges')
   .description('Get info about supported exchanges');
