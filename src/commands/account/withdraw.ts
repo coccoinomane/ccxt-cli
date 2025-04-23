@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getExchangeWithAPI, checkCurrencyRequirements } from '../../utils/exchange';
+import { getAuthenticatedExchange, checkCurrencyRequirements } from '../../utils/exchange';
 import { confirmAction } from '../../utils/confirmation';
 
 interface WithdrawOptions {
@@ -18,7 +18,7 @@ export async function withdraw(
   options: WithdrawOptions = {}
 ) {
   try {
-    const exchange = getExchangeWithAPI(exchangeId);
+    const exchange = getAuthenticatedExchange(exchangeId);
     
     // Check for currency-specific requirements
     await checkCurrencyRequirements(exchange, currency, 'withdraw');

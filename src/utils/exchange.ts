@@ -11,7 +11,7 @@ interface ExchangeConfig {
  * Given an exchange name, create and return an exchange
  * instance with API keys
  */
-export function getExchangeWithAPI(exchangeId: string): ccxt.Exchange {
+export function getAuthenticatedExchange(exchangeId: string): ccxt.Exchange {
   if (!isExchangeSupported(exchangeId.toLowerCase())) {
     throw new Error(`Exchange ${exchangeId.toLowerCase()} is not supported by CCXT.`);
   }

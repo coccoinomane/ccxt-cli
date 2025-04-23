@@ -10,7 +10,9 @@ import { markets as marketMarkets } from './commands/market/markets';
 import { ticker as marketTicker } from './commands/market/ticker';
 import { withdraw as accountWithdraw } from './commands/account/withdraw';
 import { create as orderCreate } from './commands/order/create';
-import { exchanges } from './commands/exchanges';
+import { list as exchangesList } from './commands/exchanges/list';
+import { supported as exchangesSupported } from './commands/exchanges/supported';
+import { unsupported as exchangesUnsupported } from './commands/exchanges/unsupported';
 
 // Initialize commander
 const program = new Command();
@@ -83,7 +85,7 @@ accountCommand
   .argument('<address>', 'Destination address')
   .option('-t, --tag <tag>', 'Tag/memo for currencies that require it')
   .option('-f, --force', 'Skip confirmation prompt', false)
-  .action((exchange, currency, amount, address, options) => 
+  .action((exchange, currency, amount, address, options) =>
     accountWithdraw(exchange, currency, amount, address, options));
 
 // Order commands
@@ -103,10 +105,28 @@ orderCommand
   .option('-f, --force', 'Skip confirmation prompt', false)
   .action((exchange, symbol, options) => orderCreate(exchange, symbol, options));
 
-program
+// Exchanges commands
+
+const exchangesCommand = program
   .command('exchanges')
+  .description('Get info about supported exchanges');
+
+exchangesCommand
+  .command('list')
   .description('List all exchanges supported by CCXT')
-  .action(exchanges);
-  
+  .action(exchangesList);
+
+exchangesCommand
+  .command('supported')
+  .description('List functions supported by an exchange')
+  .argument('<exchange>', 'Exchange ID')
+  .action(exchangesSupported);
+
+exchangesCommand
+  .command('unsupported')
+  .description('List functions NOT supported by an exchange')
+  .argument('<exchange>', 'Exchange ID')
+  .action(exchangesUnsupported);
+
 // Parse command line arguments
 program.parse(); 

@@ -20,6 +20,16 @@ A command-line interface for the [CCXT](https://github.com/ccxt/ccxt) cryptocurr
 4. `npm link`
 5. Run the CLI with `ccxt-cli <args>`
 
+## Set up your API keys
+
+```bash
+# Add an exchange
+npm run ccxt-cli -- config add binance
+
+# List configured exchanges
+npm run ccxt-cli -- config list
+```
+
 ## Development
 
 To see the changes you make to the code take effect, you can either:
@@ -28,6 +38,19 @@ To see the changes you make to the code take effect, you can either:
 - run the shorthand command `npm run ccxt-cli -- <args>`.
 
 ## Available Commands
+
+### Exchanges data
+
+```bash
+# List all exchanges supported by CCXT
+npm run ccxt-cli -- exchanges list
+
+# List functions supported by an exchange
+npm run ccxt-cli -- exchanges supported binance
+
+# List functions NOT supported by an exchange
+npm run ccxt-cli -- exchanges unsupported binance
+```
 
 ### Market Data (no API keys required)
 
@@ -40,16 +63,6 @@ npm run ccxt-cli -- market currencies binance
 
 # Fetch ticker info for a specific market
 npm run ccxt-cli -- market ticker binance BTC/USDT
-```
-
-### Set up your API keys
-
-```bash
-# Add an exchange
-npm run ccxt-cli -- config add binance
-
-# List configured exchanges
-npm run ccxt-cli -- config list
 ```
 
 ### Account Operations

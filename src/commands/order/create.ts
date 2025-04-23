@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getExchangeWithAPI } from '../../utils/exchange';
+import { getAuthenticatedExchange } from '../../utils/exchange';
 import { confirmAction } from '../../utils/confirmation';
 
 interface CreateOrderOptions {
@@ -19,7 +19,7 @@ export async function create(
   options: CreateOrderOptions
 ) {
   try {
-    const exchange = getExchangeWithAPI(exchangeId);
+    const exchange = getAuthenticatedExchange(exchangeId);
     
     const { type, side, amount, price, force } = options;
 

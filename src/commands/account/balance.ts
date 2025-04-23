@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getExchangeWithAPI } from '../../utils/exchange';
+import { getAuthenticatedExchange } from '../../utils/exchange';
 import { formatBalance } from '../../formatters/balanceFormatter';
 
 /**
@@ -7,7 +7,7 @@ import { formatBalance } from '../../formatters/balanceFormatter';
  */
 export async function balance(exchangeId: string) {
   try {
-    const exchange = getExchangeWithAPI(exchangeId);
+    const exchange = getAuthenticatedExchange(exchangeId);
     
     // Fetch balance
     const balanceData = await exchange.fetchBalance();
