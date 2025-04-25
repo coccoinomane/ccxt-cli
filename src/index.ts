@@ -11,6 +11,8 @@ import { markets as marketMarkets } from './commands/market/markets';
 import { ticker as marketTicker } from './commands/market/ticker';
 import { withdraw as accountWithdraw } from './commands/account/withdraw';
 import { create as orderCreate } from './commands/order/create';
+import { get as orderGet } from './commands/order/get';
+import { cancel as orderCancel } from './commands/order/cancel';
 import { open as orderListOpen } from './commands/order/list/open';
 import { list as exchangesList } from './commands/exchanges/list';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
@@ -103,6 +105,23 @@ accountCommand
 const orderCommand = program
   .command('order')
   .description('Trade on exchanges');
+
+orderCommand
+  .command('get')
+  .description('Get an order')
+  .argument('<exchange>', 'Exchange ID')
+  .argument('<orderId>', 'Order ID')
+  .option('--symbol <symbol>', 'Trading pair symbol, required for some exchanges including Binance')
+  .action((exchange, orderId, options) => orderGet(exchange, orderId, options));
+
+orderCommand
+  .command('cancel')
+  .description('Cancel an order')
+  .argument('<exchange>', 'Exchange ID')
+  .argument('<orderId>', 'Order ID')
+  .option('--symbol <symbol>', 'Trading pair symbol, required for some exchanges including Binance')
+  .option('-f, --force', 'Skip confirmation prompt', false)
+  .action((exchange, orderId, options) => orderCancel(exchange, orderId, options));
 
 orderCommand
   .command('create')

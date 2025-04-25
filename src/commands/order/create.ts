@@ -43,7 +43,7 @@ export async function create(
     );
     
     if (!confirmed) {
-      console.log('Order cancelled.');
+      console.log('Order creation cancelled.');
       return;
     }
     

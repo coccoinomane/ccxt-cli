@@ -4,6 +4,42 @@ import { Order } from 'ccxt';
 import { formatDate } from './dateFormatter';
 
 /**
+ * A stringified order object
+ */
+interface StringOrder {
+  id: string;
+  timestamp: string;
+  symbol: string;
+  type: string;
+  side: string;
+  price: string;
+  triggerPrice: string;
+  amount: string;
+  filled: string;
+  status: string;
+}
+
+/**
+ * Format an order into a readable table
+ */
+export function formatOrder(order: Order, prefix: string = ''): string {
+  const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = prepareOrder(order);
+  const rows = [
+    `${prefix}ID: ${id}`,
+    `${prefix}Time: ${timestamp}`,
+    `${prefix}Symbol: ${symbol}`,
+    `${prefix}Type: ${type}`,
+    `${prefix}Side: ${side}`,
+    `${prefix}Price: ${price}`,
+    `${prefix}Trigger price: ${triggerPrice}`,
+    `${prefix}Amount: ${amount}`,
+    `${prefix}Filled: ${filled}`,
+    `${prefix}Status: ${status}`,
+  ];
+  return rows.join('\n');
+}
+
+/**
  * Format open orders into a readable table
  */
 export function formatOpenOrders(orders: Order[]): string {
@@ -27,16 +63,7 @@ export function formatOpenOrders(orders: Order[]): string {
   });
 
   orders.forEach((order: Order) => {
-    const id = order.id || 'N/A';
-    const timestamp = order.timestamp ? formatDate(order.timestamp) : 'N/A';
-    const symbol = order.symbol || 'N/A';
-    const type = order.type || 'N/A';
-    const side = order.side || 'N/A';
-    const price = order.price !== undefined ? order.price.toString() : 'N/A';
-    const triggerPrice = order.triggerPrice !== undefined ? order.triggerPrice.toString() : 'N/A';
-    const amount = order.amount !== undefined ? order.amount.toString() : 'N/A';
-    const filled = order.filled !== undefined ? order.filled.toString() : 'N/A';
-    const status = order.status || 'N/A'; // Should typically be 'open'
+    const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = prepareOrder(order);
 
     table.push([
       id,
@@ -53,4 +80,22 @@ export function formatOpenOrders(orders: Order[]): string {
   });
 
   return table.toString();
+}
+
+/**
+ * Prepare an order for display in console
+ */
+function prepareOrder(order: Order): StringOrder {
+  return {
+    id: order.id || 'N/A',
+    timestamp: order.timestamp ? formatDate(order.timestamp) : 'N/A',
+    symbol: order.symbol || 'N/A',
+    type: order.type || 'N/A',
+    side: order.side || 'N/A',
+    price: order.price !== undefined ? order.price.toString() : 'N/A',
+    triggerPrice: order.triggerPrice !== undefined ? order.triggerPrice.toString() : 'N/A',
+    amount: order.amount !== undefined ? order.amount.toString() : 'N/A',
+    filled: order.filled !== undefined ? order.filled.toString() : 'N/A',
+    status: order.status || 'N/A'
+  };
 }
