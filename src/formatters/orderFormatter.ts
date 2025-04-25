@@ -19,6 +19,7 @@ export function formatOpenOrders(orders: Order[]): string {
       chalk.cyan('Type'),
       chalk.cyan('Side'),
       chalk.cyan('Price'),
+      chalk.cyan('Trigger'),
       chalk.cyan('Amount'),
       chalk.cyan('Filled'),
       chalk.cyan('Status')
@@ -32,6 +33,7 @@ export function formatOpenOrders(orders: Order[]): string {
     const type = order.type || 'N/A';
     const side = order.side || 'N/A';
     const price = order.price !== undefined ? order.price.toString() : 'N/A';
+    const triggerPrice = order.triggerPrice !== undefined ? order.triggerPrice.toString() : 'N/A';
     const amount = order.amount !== undefined ? order.amount.toString() : 'N/A';
     const filled = order.filled !== undefined ? order.filled.toString() : 'N/A';
     const status = order.status || 'N/A'; // Should typically be 'open'
@@ -43,6 +45,7 @@ export function formatOpenOrders(orders: Order[]): string {
       type,
       side,
       price,
+      triggerPrice,
       amount,
       filled,
       status
