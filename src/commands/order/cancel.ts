@@ -28,8 +28,11 @@ export async function cancel(
 
     if (!force) {
       const order = await exchange.fetchOrder(orderId, symbol);
+      if (order.status !== 'open') {
+        console.log(chalk.red(`No need to cancel order ${orderId}: it has status '${order.status}'`));
+        return;
+      }
       const formattedOrder = formatOrder(order);
-      console.log(formattedOrder);
       const confirmed = await confirmAction(
         `Are you sure you want to cancel the above order?`,
         force
@@ -42,7 +45,6 @@ export async function cancel(
     
     // Cancel order
     const cancelledOrder = await exchange.cancelOrder(orderId, symbol);
-    console.log(cancelledOrder);
     
     console.log(chalk.green(`Order ${orderId} cancelled.`));
     

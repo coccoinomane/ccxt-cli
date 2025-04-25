@@ -13,6 +13,7 @@ import { withdraw as accountWithdraw } from './commands/account/withdraw';
 import { create as orderCreate } from './commands/order/create';
 import { get as orderGet } from './commands/order/get';
 import { cancel as orderCancel } from './commands/order/cancel';
+import { cancelAll as orderCancelAll } from './commands/order/cancelAll';
 import { open as orderListOpen } from './commands/order/list/open';
 import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
@@ -122,6 +123,14 @@ orderCommand
   .option('--symbol <symbol>', 'Trading pair symbol, required for some exchanges including Binance')
   .option('-f, --force', 'Skip confirmation prompt', false)
   .action((exchange, orderId, options) => orderCancel(exchange, orderId, options));
+
+orderCommand
+  .command('cancelAll')
+  .description('Cancel all open orders on the given market')
+  .argument('<exchange>', 'Exchange ID')
+  .option('--symbol <symbol>', 'Trading pair symbol, required for some exchanges including Binance')
+  .option('-f, --force', 'Skip confirmation prompt', false)
+  .action((exchange, options) => orderCancelAll(exchange, options));
 
 orderCommand
   .command('create')
