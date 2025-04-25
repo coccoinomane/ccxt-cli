@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { getAuthenticatedExchange } from '../../utils/exchange';
-import { confirmAction } from '../../utils/confirmation';
 import { formatOrder } from '../../formatters/orderFormatter';
 
 interface GetOrderOptions {

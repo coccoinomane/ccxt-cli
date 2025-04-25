@@ -23,7 +23,7 @@ interface StringOrder {
  * Format an order into a readable table
  */
 export function formatOrder(order: Order, prefix: string = ''): string {
-  const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = prepareOrder(order);
+  const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = stringifyOrder(order);
   const rows = [
     `${prefix}ID: ${id}`,
     `${prefix}Time: ${timestamp}`,
@@ -63,7 +63,7 @@ export function formatOpenOrders(orders: Order[]): string {
   });
 
   orders.forEach((order: Order) => {
-    const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = prepareOrder(order);
+    const { id, timestamp, symbol, type, side, price, triggerPrice, amount, filled, status } = stringifyOrder(order);
 
     table.push([
       id,
@@ -85,7 +85,7 @@ export function formatOpenOrders(orders: Order[]): string {
 /**
  * Prepare an order for display in console
  */
-function prepareOrder(order: Order): StringOrder {
+function stringifyOrder(order: Order): StringOrder {
   return {
     id: order.id || 'N/A',
     timestamp: order.timestamp ? formatDate(order.timestamp) : 'N/A',

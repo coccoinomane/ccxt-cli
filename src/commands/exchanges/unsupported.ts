@@ -6,7 +6,6 @@ import { getExchange } from '../../utils/exchange';
  */
 export function unsupported(exchangeId: string) {
   const exchange = getExchange(exchangeId);
-  console.log(chalk.cyan(`FUNCTIONS NOT SUPPORTED BY ${exchange.id}:`));
   let unsupported = 0;
   Object.keys(exchange.has).sort().forEach((func: string) => {
     if (!exchange.has[func]) {

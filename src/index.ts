@@ -15,9 +15,9 @@ import { get as orderGet } from './commands/order/get';
 import { cancel as orderCancel } from './commands/order/cancel';
 import { open as orderListOpen } from './commands/order/list/open';
 import { list as exchangesList } from './commands/exchanges/list';
+import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
 import { unsupported as exchangesUnsupported } from './commands/exchanges/unsupported';
-
 // Initialize commander
 const program = new Command();
 
@@ -157,8 +157,14 @@ exchangesCommand
   .action(exchangesList);
 
 exchangesCommand
+  .command('features')
+  .description('List all methods and functionalities supported by the given exchange indexed by market-type (spot, futures, swap, etc.)')
+  .argument('<exchange>', 'Exchange ID')
+  .action(exchangesFeatures);
+
+exchangesCommand
   .command('supported')
-  .description('List functions supported by an exchange')
+  .description('List functions supported by an exchange.  Also see the `features` command.')
   .argument('<exchange>', 'Exchange ID')
   .action(exchangesSupported);
 
