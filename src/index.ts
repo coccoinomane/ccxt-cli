@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import { setDebugCalls } from './utils/debug';
 
 // Import commands
 import { add as configAdd } from './commands/config/add';
@@ -21,10 +22,19 @@ const program = new Command();
 program
   .name('ccxt-cli')
   .description('CLI for cryptocurrency exchange trading via CCXT')
-  .version('1.0.0');
+  .version('1.0.0')
+  .hook('preAction', (thisCommand) => {
+    // Set debug flag based on global option
+    const options = thisCommand.opts();
+    const debugCalls = options.debugCalls || false;
+    const debugCallsVerbose = options.debugCallsVerbose || false;
+    setDebugCalls(debugCalls, debugCallsVerbose);
+  });
 
 // Add global options
 program.option('-v, --verbose', 'Enable verbose output');
+program.option('--debug-calls', 'Log most CCXT function calls and responses');
+program.option('--debug-calls-verbose', 'Log all CCXT function calls and responses');
 
 // Configuration commands
 const configCommand = program

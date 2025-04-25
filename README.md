@@ -37,6 +37,11 @@ To see the changes you make to the code take effect, you can either:
 - build and run the CLI with `npm run build && ccxt-cli <args>`, or
 - run the shorthand command `npm run ccxt-cli -- <args>`.
 
+## Global options
+
+- `--debug-calls`: Print to the console most of the calls made to the API and their response.
+- `--debug-calls-verbose`: Print to the console all of the calls made to the API and their response.
+
 ## Available Commands
 
 ### Exchanges data

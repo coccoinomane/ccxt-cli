@@ -1,6 +1,7 @@
 import * as ccxt from 'ccxt';
 import chalk from 'chalk';
 import { getExchangeConfig } from '../config/keys';
+import { debugFunctionCall, getDebugCalls } from './debug';
 
 interface ExchangeConfig {
   apiKey: string;
@@ -30,6 +31,11 @@ export function getAuthenticatedExchange(exchangeId: string): ccxt.Exchange {
     enableRateLimit: true
   });
 
+  // Wrap exchange methods with debug logging
+  if (getDebugCalls()) {
+    wrapExchangeMethods(exchange, getDebugCalls() === 'all');
+  }
+
   return exchange;
 }
 
@@ -42,10 +48,50 @@ export function getExchange(exchangeId: string): ccxt.Exchange {
     const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
       enableRateLimit: true
     });
+    
+    // Wrap exchange methods with debug logging
+    if (getDebugCalls()) { 
+      wrapExchangeMethods(exchange, getDebugCalls() === 'all');
+    }
+    
     return exchange;
   } catch (error) {
     throw new Error(`Exchange ${exchangeId} is not supported by CCXT.`);
   }
+}
+
+/**
+ * Wrap exchange methods with debug logging
+ */
+function wrapExchangeMethods(exchange: ccxt.Exchange, verbose: boolean): void {
+  // Common API methods to wrap
+  let methodsToWrap = [
+    'fetchBalance',
+    'fetchOrder',
+    'createOrder',
+    'cancelOrder',
+    'fetchTicker',
+    'withdraw',
+    'fetchOpenOrders',
+  ];
+
+  if (verbose) {
+    methodsToWrap = []
+    Object.keys(exchange.has).forEach(method => {
+      if (exchange.has[method]) {
+        methodsToWrap.push(method);
+      }
+    });
+  }
+
+  methodsToWrap.forEach(method => {
+    // Use type assertion to allow indexing with string
+    const exchangeAny = exchange as any;
+    if (exchangeAny[method]) {
+      const originalMethod = exchangeAny[method].bind(exchange);
+      exchangeAny[method] = (...args: any[]) => debugFunctionCall(method, originalMethod, ...args);
+    }
+  });
 }
 
 /**
