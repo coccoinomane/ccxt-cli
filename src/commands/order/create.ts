@@ -36,12 +36,23 @@ export async function create(exchangeId: string, symbol: string, options: Create
             return;
         }
 
+        // Check that market exists
+        const market = await exchange.loadMarkets();
+        if (!market[symbol]) {
+            console.log(chalk.red('Market not found.'));
+            return;
+        }
+
+        // Get base and quote currencies
+        const base = market[symbol].base;
+        const quote = market[symbol].quote;
+
         // Confirm order creation
-        let orderDesc = `${side} ${amount} ${symbol}`;
+        let orderDesc = `${side} ${amount} ${base}`;
         if (type === 'limit' && price) {
-            orderDesc += ` @ ${price} (limit order)`;
+            orderDesc += ` @ ${price} ${quote} (limit order)`;
         } else {
-            orderDesc += ` at market price (market order)`;
+            orderDesc += ` at current price (market order)`;
         }
 
         // Add params information to description if present
