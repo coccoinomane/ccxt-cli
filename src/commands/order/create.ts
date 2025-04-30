@@ -1,6 +1,8 @@
 import chalk from 'chalk';
 import { getAuthenticatedExchange } from '../../utils/exchange';
 import { confirmAction } from '../../utils/confirmation';
+import { Command } from 'commander';
+import { parseCustomParams } from '../../utils/commander';
 
 interface CreateOrderOptions {
     type: string;
@@ -13,15 +15,24 @@ interface CreateOrderOptions {
 /**
  * Command to create a new order on an exchange
  */
-export async function create(exchangeId: string, symbol: string, options: CreateOrderOptions) {
+export async function create(exchangeId: string, symbol: string, options: CreateOrderOptions, command: Command) {
     try {
         const exchange = getAuthenticatedExchange(exchangeId);
 
         const { type, side, amount, price, force } = options;
 
-        // For market orders, make sure user understands price is not specified
+        // Parse custom parameters directly from process.argv
+        const params = parseCustomParams();
+
+        // For market orders, price must not be specified
         if (type === 'market' && price) {
             console.log(chalk.red('Cannot specify price for market orders.'));
+            return;
+        }
+
+        // For limit orders, price is required
+        if (type === 'limit' && !price) {
+            console.log(chalk.red('Price is required for limit orders.'));
             return;
         }
 
@@ -33,6 +44,11 @@ export async function create(exchangeId: string, symbol: string, options: Create
             orderDesc += ` at market price (market order)`;
         }
 
+        // Add params information to description if present
+        if (Object.keys(params).length > 0) {
+            orderDesc += ` with custom parameters: ${JSON.stringify(params)}`;
+        }
+
         const confirmed = await confirmAction(`Are you sure you want to ${orderDesc}?`, force);
 
         if (!confirmed) {
@@ -40,8 +56,15 @@ export async function create(exchangeId: string, symbol: string, options: Create
             return;
         }
 
-        // Create order
-        const order = await exchange.createOrder(symbol, type, side, parseFloat(amount), type === 'limit' && price ? parseFloat(price) : undefined);
+        // Create order with params
+        const order = await exchange.createOrder(
+            symbol,
+            type,
+            side,
+            parseFloat(amount),
+            type === 'limit' && price ? parseFloat(price) : undefined,
+            Object.keys(params).length > 0 ? params : undefined,
+        );
 
         console.log(chalk.green('Order created:'));
         console.log(JSON.stringify(order, null, 2));

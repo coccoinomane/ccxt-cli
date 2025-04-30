@@ -19,6 +19,7 @@ import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
 import { unsupported as exchangesUnsupported } from './commands/exchanges/unsupported';
+import { getSupportedOptions } from './utils/commander';
 
 // Initialize commander
 const program = new Command();
@@ -27,9 +28,9 @@ program
     .name('ccxt-cli')
     .description('CLI for cryptocurrency exchange trading via CCXT')
     .version('1.0.0')
-    .hook('preAction', (thisCommand) => {
+    .hook('preAction', (cmd) => {
         // Set debug flag based on global option
-        const options = thisCommand.opts();
+        const options = cmd.opts();
         const debugCalls = options.debugCalls || false;
         const debugCallsVerbose = options.debugCallsVerbose || false;
         setDebugCalls(debugCalls, debugCallsVerbose);
@@ -107,7 +108,7 @@ orderCommand
 
 orderCommand
     .command('create')
-    .description('Create a new order')
+    .description('Create a new order; supports custom parameters via the --params-<key> <value> syntax')
     .argument('<exchange>', 'Exchange ID')
     .argument('<symbol>', 'Trading pair symbol')
     .requiredOption('-a, --amount <amount>', 'Order amount')
@@ -115,7 +116,28 @@ orderCommand
     .requiredOption('-s, --side <side>', 'Order side (buy/sell)', 'buy')
     .option('-p, --price <price>', 'Order price (for limit orders)')
     .option('-f, --force', 'Skip confirmation prompt', false)
-    .action((exchange, symbol, options) => orderCreate(exchange, symbol, options));
+    .allowUnknownOption()
+    .hook('preAction', (cmd) => {
+        // Passed options that are not known by the current command
+        let unknown = cmd.parseOptions(process.argv).unknown;
+        // For some reason, the above includes options that are supported by
+        // parent commands, so we need to exclude them manually
+        unknown = unknown.filter((option) => !getSupportedOptions(cmd).includes(option));
+        for (let i = 0; i < unknown.length; i++) {
+            // If 'i' is even, then it's a key, and the key must start with '--params-'
+            // If 'i' is odd, then it's a value, and there are no constraints
+            if (i % 2 === 1) continue;
+            if (!unknown[i].startsWith('--params-')) {
+                cmd.error('Error: Unknown option: ' + unknown[i]);
+            } else {
+                // Make sure there is a value for the key
+                if (unknown[i + 1] === undefined || unknown[i + 1].startsWith('-')) {
+                    cmd.error('Error: Missing value for option: ' + unknown[i]);
+                }
+            }
+        }
+    })
+    .action((exchange, symbol, options, command) => orderCreate(exchange, symbol, options, command));
 
 // Add list subcommand to order
 const orderListCommand = orderCommand.command('list').description('List orders');

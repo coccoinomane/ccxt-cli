@@ -84,13 +84,63 @@ npm run ccxt-cli -- account withdraw binance BTC 0.01 1A1zP1eP5QGefi2DMPTfTL5SLm
 
 ### Trading
 
-```bash
-# Create a limit buy order
-npm run ccxt-cli -- order create binance BTC/USDT --side buy --amount 0.001 --price 50000
+Create a limit buy order:
 
-# Create a market sell order
+```bash
+npm run ccxt-cli -- order create binance BTC/USDT --type limit --side buy --amount 0.001 --price 50000
+```
+
+Create a market sell order:
+
+```bash
 npm run ccxt-cli -- order create binance BTC/USDT --type market --side sell --amount 0.001
 ```
+
+Create a stop limit order:
+
+```bash
+npm run ccxt-cli -- order create binance BTC/USDT --type limit --side sell --amount 0.001 --price 50000 --params-triggerPrice 52000
+```
+
+Create an OCO order to:
+
+1. buy BTC at 50000, then
+2. set a stop loss at 48000 (triggering at 48100) and
+3. a take profit at 52000 (triggering at 51900):
+
+```bash
+npm run ccxt-cli -- order create binance BTC/USDT\
+ --type limit --side buy --amount 0.001 --price 50000\
+ --params-stopLoss-triggerPrice   48000 --params-stopLoss-price 47900\
+ --params-takeProfit-triggerPrice 52000 --params-takeProfit-price 51900
+```
+
+#### Using Custom Parameters
+
+The `order create` command supports passing custom parameters to the underlying exchange API using the `--params-*` syntax. These parameters are passed directly to the CCXT `createOrder` function as the `params` object.
+
+Example of custom parameters object that will be created:
+
+```javascript
+const params = {
+    stopLoss: {
+        triggerPrice: 6.0,
+        price: 5.0,
+    },
+    takeProfit: {
+        triggerPrice: 15.0,
+        price: 14.0,
+    },
+};
+```
+
+You can specify these parameters on the command line using dot notation:
+
+```bash
+--params-stopLoss-triggerPrice 6.0 --params-stopLoss-price 5.0 --params-takeProfit-triggerPrice 15.0 --params-takeProfit-price 14.0
+```
+
+Note that the available parameters depend on the specific exchange API and may vary; for more details, refer to the [CCXT documentation on placing orders](https://docs.ccxt.com/#/README?id=placing-orders).
 
 ## Environment Variables (TO DO)
 
