@@ -12,5 +12,4 @@ import { getExchange } from '../../utils/exchange';
 export function features(exchangeId: string) {
     const exchange = getExchange(exchangeId);
     console.log(exchange.features);
-  }
-  
+}

@@ -3,5 +3,5 @@
  * in UTC timezone.
  */
 export function formatDate(timestamp: number) {
-  return new Date(timestamp).toISOString().replace('T', ' ').substring(0, 19);
+    return new Date(timestamp).toISOString().replace('T', ' ').substring(0, 19);
 }
