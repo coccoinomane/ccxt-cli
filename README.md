@@ -41,6 +41,7 @@ To see the changes you make to the code take effect, you can either:
 
 - `--debug-calls`: Print to the console most of the calls made to the API and their response.
 - `--debug-calls-verbose`: Print to the console all of the calls made to the API and their response.
+- `--debug-http`: Print to the console all HTTP requests and responses to the exchange APIs.
 
 ## Available Commands
 
@@ -96,10 +97,10 @@ Create a market sell order:
 npm run ccxt-cli -- order create binance BTC/USDT --type market --side sell --amount 0.001
 ```
 
-Create a stop limit order:
+Create a stop order:
 
 ```bash
-npm run ccxt-cli -- order create binance BTC/USDT --type limit --side sell --amount 0.001 --price 50000 --params-triggerPrice 52000
+npm run ccxt-cli -- order create binance BTC/USDT --type market --side sell --amount 0.001 --params-triggerPrice 52000
 ```
 
 Create an OCO order to:

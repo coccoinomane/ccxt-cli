@@ -2,9 +2,9 @@ import chalk from 'chalk';
 
 type DebugCalls = false | 'most' | 'all';
 
-// Global flag that can be set from CLI
+// Global flags that can be set from CLI
 let debugCalls: DebugCalls;
-
+let debugHttp: boolean;
 /**
  * Set the debug mode for CCXT function calls
  */
@@ -19,10 +19,24 @@ export function setDebugCalls(debug: boolean, debugVerbose: boolean): void {
 }
 
 /**
+ * Set the debug mode for HTTP requests
+ */
+export function setDebugHttp(debug: boolean): void {
+    debugHttp = debug;
+}
+
+/**
  * Get the current debug mode status
  */
 export function getDebugCalls(): DebugCalls {
     return debugCalls;
+}
+
+/**
+ * Get the current debug mode status for HTTP requests
+ */
+export function getDebugHttp(): boolean {
+    return debugHttp;
 }
 
 /**
@@ -38,6 +52,8 @@ export async function debugFunctionCall<T>(methodName: string, fn: (...args: any
         if (debugCalls) {
             console.log(chalk.gray('--------- Function Response ---------'));
             console.log(chalk.gray(`Method: ${methodName}`));
+            console.log(chalk.gray('Args:'));
+            console.log(JSON.stringify(args, null, 2));
             console.log(chalk.gray('Result:'));
             console.log(JSON.stringify(result, null, 2));
             console.log(chalk.gray('-------------------------------'));

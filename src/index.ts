@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { setDebugCalls } from './utils/debug';
+import { setDebugCalls, setDebugHttp } from './utils/debug';
 
 // Import commands
 import { add as configAdd } from './commands/config/add';
@@ -29,17 +29,21 @@ program
     .description('CLI for cryptocurrency exchange trading via CCXT')
     .version('1.0.0')
     .hook('preAction', (cmd) => {
-        // Set debug flag based on global option
+        // Set global flags
         const options = cmd.opts();
+        // Debug calls
         const debugCalls = options.debugCalls || false;
         const debugCallsVerbose = options.debugCallsVerbose || false;
         setDebugCalls(debugCalls, debugCallsVerbose);
+        // Debug HTTP
+        const debugHttp = options.debugHttp || false;
+        setDebugHttp(debugHttp);
     });
 
 // Add global options
-program.option('-v, --verbose', 'Enable verbose output');
-program.option('--debug-calls', 'Log most CCXT function calls and responses');
-program.option('--debug-calls-verbose', 'Log all CCXT function calls and responses');
+program.option('--debug-http', 'Print all HTTP requests and responses to the exchange APIs');
+program.option('--debug-calls', 'Print most CCXT function calls and responses');
+program.option('--debug-calls-verbose', 'Print all CCXT function calls and responses');
 
 // Configuration commands
 const configCommand = program.command('config').description('Manage exchange API keys');

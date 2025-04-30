@@ -1,7 +1,7 @@
 import * as ccxt from 'ccxt';
 import chalk from 'chalk';
 import { getExchangeConfig } from '../config/keys';
-import { debugFunctionCall, getDebugCalls } from './debug';
+import { debugFunctionCall, getDebugCalls, getDebugHttp } from './debug';
 
 interface ExchangeConfig {
     apiKey: string;
@@ -12,7 +12,7 @@ interface ExchangeConfig {
  * Given an exchange name, create and return an exchange
  * instance with API keys
  */
-export function getAuthenticatedExchange(exchangeId: string): ccxt.Exchange {
+export function getAuthenticatedExchange(exchangeId: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
     if (!isExchangeSupported(exchangeId.toLowerCase())) {
         throw new Error(`Exchange ${exchangeId.toLowerCase()} is not supported by CCXT.`);
     }
@@ -24,9 +24,11 @@ export function getAuthenticatedExchange(exchangeId: string): ccxt.Exchange {
 
     // Use dynamic instantiation pattern
     const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
+        ...options,
         apiKey: config.apiKey,
         secret: config.secret,
         enableRateLimit: true,
+        verbose: getDebugHttp(),
     });
 
     // Wrap exchange methods with debug logging
@@ -41,10 +43,12 @@ export function getAuthenticatedExchange(exchangeId: string): ccxt.Exchange {
  * Given an exchange name, create and return an exchange instance
  * without API keys, to be used to query public endpoints
  */
-export function getExchange(exchangeId: string): ccxt.Exchange {
+export function getExchange(exchangeId: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
     try {
         const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
+            ...options,
             enableRateLimit: true,
+            verbose: getDebugHttp(),
         });
 
         // Wrap exchange methods with debug logging
