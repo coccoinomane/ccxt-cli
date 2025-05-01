@@ -48,7 +48,11 @@ program.option('--debug-calls-verbose', 'Print all CCXT function calls and respo
 // Configuration commands
 const configCommand = program.command('config').description('Manage exchange API keys');
 
-configCommand.command('add').description('Add API keys for an exchange').argument('<exchange>', 'Exchange ID (e.g., binance, kraken)').action(configAdd);
+configCommand
+    .command('add')
+    .description('Add API keys for an exchange')
+    .argument('<exchange>', 'Exchange ID (e.g., binance, kraken).  Use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.')
+    .action(configAdd);
 
 configCommand.command('list').description('List configured exchanges').action(configList);
 

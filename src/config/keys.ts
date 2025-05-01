@@ -1,6 +1,7 @@
 import Conf from 'conf';
 import { prompt } from 'inquirer';
-import { isExchangeSupported } from '../utils/exchange';
+import { isExchangeIdSupported } from '../utils/exchange';
+import chalk from 'chalk';
 
 const config = new Conf({
     encryptionKey: 'ccxt-cli-encryption-key', // Consider more secure approaches
@@ -9,34 +10,49 @@ const config = new Conf({
 
 /**
  * Add API keys for an exchange
+ *
+ * @param exchangeId - The exchange ID to add API keys for; use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.
+ * @throws Error if the exchange is not supported by CCXT
  */
 export async function addExchangeConfig(exchangeId: string) {
-    if (!isExchangeSupported(exchangeId)) {
+    // Check if the exchange is supported by CCXT
+    if (!isExchangeIdSupported(exchangeId)) {
         throw new Error(`Exchange ${exchangeId} is not supported by CCXT.`);
     }
 
+    // Config key will be the lowercase exchange ID
+    const configKey = `${exchangeId.toLowerCase()}`;
+
+    // Warn if config already exists
+    if (config.has(`exchanges.${configKey}`)) {
+        console.log(chalk.yellow(`Warning: Config for ${exchangeId.toLowerCase()} already exists, if you proceed, it will override the existing config, CTRL+C to cancel.`));
+    }
+
+    // Prompt for API keys
     const { apiKey, secret } = await prompt([
         {
             type: 'input',
             name: 'apiKey',
-            message: `Enter API key for ${exchangeId.toLowerCase()}:`,
+            message: `Enter API key for ${configKey}:`,
         },
         {
             type: 'password',
             name: 'secret',
-            message: `Enter secret for ${exchangeId.toLowerCase()}:`,
+            message: `Enter secret for ${configKey}:`,
         },
     ]);
 
-    config.set(`exchanges.${exchangeId.toLowerCase()}`, { apiKey, secret });
-    console.log(`Credentials for ${exchangeId.toLowerCase()} saved successfully`);
+    // Save config
+    config.set(`exchanges.${configKey}`, { apiKey, secret });
+    console.log(`Credentials for ${configKey} saved successfully`);
 }
 
 /**
  * Get API keys for an exchange
  */
 export function getExchangeConfig(exchangeId: string) {
-    return config.get(`exchanges.${exchangeId.toLowerCase()}`);
+    const configKey = `${exchangeId.toLowerCase()}`;
+    return config.get(`exchanges.${configKey}`);
 }
 
 /**

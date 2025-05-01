@@ -11,6 +11,7 @@ A command-line interface for the [CCXT](https://github.com/ccxt/ccxt) cryptocurr
 - Confirmation prompts for potentially destructive actions
 - Clear warnings about exchange requirements (e.g., address whitelisting)
 - Secure storage of API keys for exchanges
+- Testnet/sandbox support
 
 ## Quick Start
 
@@ -25,8 +26,13 @@ A command-line interface for the [CCXT](https://github.com/ccxt/ccxt) cryptocurr
 ```bash
 # Add an exchange
 npm run ccxt-cli -- config add binance
+npm run ccxt-cli -- config add cryptocom
 
-# List configured exchanges
+# To add an exchange testnet/sandbox, use the `-testnet` suffix
+npm run ccxt-cli -- config add binance-testnet
+npm run ccxt-cli -- config add cryptocom-testnet
+
+# Show all configured exchanges
 npm run ccxt-cli -- config list
 ```
 
@@ -45,11 +51,14 @@ To see the changes you make to the code take effect, you can either:
 
 ## Available Commands
 
-### Exchanges data
+### Supported exchanges and functions
 
 ```bash
 # List all exchanges supported by CCXT
 npm run ccxt-cli -- exchanges list
+
+# List features supported by an exchange
+npm run ccxt-cli -- exchanges features binance
 
 # List functions supported by an exchange
 npm run ccxt-cli -- exchanges supported binance
@@ -83,7 +92,7 @@ npm run ccxt-cli -- account withdraw binance BTC 0.01 1A1zP1eP5QGefi2DMPTfTL5SLm
 npm run ccxt-cli -- account withdraw binance BTC 0.01 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa --force
 ```
 
-### Trading
+### Trading and placing orders
 
 Create a limit buy order:
 
@@ -114,6 +123,42 @@ npm run ccxt-cli -- order create binance BTC/USDT\
  --type limit --side buy --amount 0.001 --price 50000\
  --params-stopLoss-triggerPrice   48000 --params-stopLoss-price 47900\
  --params-takeProfit-triggerPrice 52000 --params-takeProfit-price 51900
+```
+
+### Testnet/sandbox
+
+Same as above, but for testnet/sandbox use the `-testnet` suffix:
+
+```bash
+npm run ccxt-cli -- config add binance-testnet
+npm run ccxt-cli -- order create binance-testnet BTC/USDT --type limit --side buy --amount 0.001 --price 50000
+```
+
+Usually the API keys for testnet/sandbox are not the same as the ones for the mainnet/live environment. For example, on Binance, you need to create them here:
+
+- For spot orders > https://testnet.binance.vision/
+- For futures orders > https://testnet.binancefuture.com/
+
+### Managing orders
+
+Get details about a specific order:
+
+```bash
+npm run ccxt-cli -- order get binance 1234567890 --symbol BTC/USDT
+```
+
+Cancel a specific order:
+
+```bash
+npm run ccxt-cli -- order cancel binance 1234567890 --symbol BTC/USDT
+# The market symbol may be omitted on some exchanges
+npm run ccxt-cli -- order cancel cryptocom 1234567890
+```
+
+Cancel all open orders on a market:
+
+```bash
+npm run ccxt-cli -- order cancelAll binance --symbol BTC/USDT
 ```
 
 #### Using Custom Parameters

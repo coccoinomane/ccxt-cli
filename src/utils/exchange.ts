@@ -9,11 +9,14 @@ interface ExchangeConfig {
 }
 
 /**
- * Given an exchange name, create and return an exchange
- * instance with API keys
+ * Given an exchange ID, create and return an authenticated exchange instance
+ * taking API keys from the config file.
+ *
+ * @param exchangeId - The exchange ID to create an authenticated exchange for; use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.
+ * @throws Error if the exchange is not supported by CCXT
  */
 export function getAuthenticatedExchange(exchangeId: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
-    if (!isExchangeSupported(exchangeId.toLowerCase())) {
+    if (!isExchangeIdSupported(exchangeId.toLowerCase())) {
         throw new Error(`Exchange ${exchangeId.toLowerCase()} is not supported by CCXT.`);
     }
 
@@ -22,30 +25,50 @@ export function getAuthenticatedExchange(exchangeId: string, options: ccxt.Const
         throw new Error(`No API keys found for ${exchangeId.toLowerCase()}. Run 'ccxt-cli config add ${exchangeId.toLowerCase()}' first.`);
     }
 
-    // Use dynamic instantiation pattern
-    const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
+    const { exchangeId: exchangeIdWithoutTestnet, isTestnet } = parseExchangeIdWithTestnet(exchangeId);
+
+    return getExchange(exchangeIdWithoutTestnet, {
         ...options,
         apiKey: config.apiKey,
         secret: config.secret,
         enableRateLimit: true,
         verbose: getDebugHttp(),
+        sandbox: isTestnet,
     });
-
-    // Wrap exchange methods with debug logging
-    if (getDebugCalls()) {
-        wrapExchangeMethods(exchange, getDebugCalls() === 'all');
-    }
-
-    return exchange;
 }
 
 /**
- * Given an exchange name, create and return an exchange instance
- * without API keys, to be used to query public endpoints
+ * Given an exchange ID, create and return an unauthenticated exchange instance
+ * that can be used to fetch public data.
+ *
+ * @param exchangeId - The exchange ID to create the public exchange for; use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.
+ * @throws Error if the exchange is not supported by CCXT
  */
-export function getExchange(exchangeId: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
+export function getPublicExchange(exchangeId: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
+    if (!isExchangeIdSupported(exchangeId.toLowerCase())) {
+        throw new Error(`Exchange ${exchangeId.toLowerCase()} is not supported by CCXT.`);
+    }
+
+    const { exchangeId: exchangeIdWithoutTestnet, isTestnet } = parseExchangeIdWithTestnet(exchangeId);
+
+    return getExchange(exchangeIdWithoutTestnet, {
+        ...options,
+        enableRateLimit: true,
+        verbose: getDebugHttp(),
+        sandbox: isTestnet,
+    });
+}
+
+/**
+ * Given a CCXT exchange name (so, without the `-testnet` suffix) and optional
+ * CCXT constructor arguments, create and return an exchange instance.
+ *
+ * @param exchangeName - The exchange name to create an exchange for.  Use vanilla CCXT exchange names, without the `-testnet` suffix, e.g. `binance`, `bybit`, `kraken`, etc.
+ * @throws Error if the exchange is not supported by CCXT
+ */
+export function getExchange(exchangeName: string, options: ccxt.ConstructorArgs = {}): ccxt.Exchange {
     try {
-        const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
+        const exchange = new (ccxt as any)[exchangeName.toLowerCase()]({
             ...options,
             enableRateLimit: true,
             verbose: getDebugHttp(),
@@ -58,7 +81,7 @@ export function getExchange(exchangeId: string, options: ccxt.ConstructorArgs = 
 
         return exchange;
     } catch (error) {
-        throw new Error(`Exchange ${exchangeId} is not supported by CCXT.`);
+        throw new Error(`Exchange ${exchangeName} is not supported by CCXT.`);
     }
 }
 
@@ -89,17 +112,42 @@ function wrapExchangeMethods(exchange: ccxt.Exchange, verbose: boolean): void {
 }
 
 /**
- * Given an exchange name, return true if the exchange is supported by CCXT
+ * Given an exchange ID, return true if the exchange is supported by CCXT.
+ *
+ * If the exchange ID is a testnet exchange, the function will also test
+ * whether the exchange supports sandbox trading in CCXT.
+ *
+ * @param exchangeId - The exchange ID to check; use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.
+ * @returns True if the exchange is supported by CCXT, false otherwise
  */
-export function isExchangeSupported(exchangeId: string): boolean {
+export function isExchangeIdSupported(exchangeId: string): boolean {
+    const { exchangeId: exchangeIdWithoutTestnet, isTestnet } = parseExchangeIdWithTestnet(exchangeId);
     try {
-        const exchange = new (ccxt as any)[exchangeId.toLowerCase()]({
+        const exchange = new (ccxt as any)[exchangeIdWithoutTestnet.toLowerCase()]({
             enableRateLimit: true,
         });
+        if (isTestnet && !exchange.has['sandbox']) {
+            return false;
+        }
         return true;
     } catch (error) {
         return false;
     }
+}
+
+/**
+ * Parse an exchange ID into a CCXT exchange ID and testnet flag.
+ * For example, `binance-testnet` will be parsed into `binance` and `true`,
+ * while `binance` will be parsed into `binance` and `false`.
+ *
+ * @param exchangeId - The exchange ID to parse; use the `-testnet` suffix for sandbox environments, e.g. `binance-testnet`.
+ * @returns The parsed exchange ID and testnet flag
+ * @throws Error if the exchange is not supported by CCXT
+ */
+export function parseExchangeIdWithTestnet(exchangeId: string): { exchangeId: string; isTestnet: boolean } {
+    const isTestnet = exchangeId.endsWith('-testnet');
+    const exchangeIdWithoutTestnet = isTestnet ? exchangeId.slice(0, -8) : exchangeId;
+    return { exchangeId: exchangeIdWithoutTestnet, isTestnet };
 }
 
 /**
