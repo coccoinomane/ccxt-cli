@@ -141,7 +141,7 @@ For futures testnet, you can do:
 
 ```bash
 npm run ccxt-cli -- config add binanceusdm-testnet
-npm run ccxt-cli -- order create binanceusdm-testnet BTC/USDT --type limit --side buy --amount 0.001 --price 100000
+npm run ccxt-cli -- order create binanceusdm-testnet BTC/USDT:USDT --type limit --side buy --amount 0.01 --price 100000
 ```
 
 Usually the API keys for testnet/sandbox are not the same as the ones for the mainnet/live environment. For example, on Binance, you need to create them here:

@@ -18,6 +18,8 @@ import { get as orderGet } from './commands/order/get';
 import { cancel as orderCancel } from './commands/order/cancel';
 import { cancelAll as orderCancelAll } from './commands/order/cancelAll';
 import { open as orderListOpen } from './commands/order/list/open';
+import { open as positionListOpen } from './commands/position/list/open';
+import { get as positionGet } from './commands/position/get';
 import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
@@ -175,6 +177,21 @@ orderCommand
 const orderListCommand = orderCommand.command('list').description('List orders');
 
 orderListCommand.command('open').description('List open orders').argument('<exchange>', 'Exchange ID').action(orderListOpen);
+
+// Future positions commands
+const positionCommand = program.command('position').description('Manage futures positions');
+
+positionCommand
+    .command('get')
+    .description('Get position for a specific market')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .action((exchange, symbol, options) => positionGet(exchange, symbol, options));
+
+// Add list subcommand to position
+const positionListCommand = positionCommand.command('list').description('List open positions');
+
+positionListCommand.command('open').description('List open positions').argument('<exchange>', 'Exchange ID').action(positionListOpen);
 
 // Exchanges commands
 const exchangesCommand = program.command('exchanges').description('Get info about supported exchanges');
