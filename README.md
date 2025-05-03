@@ -83,8 +83,11 @@ npm run ccxt-cli -- market ticker binance BTC/USDT
 ### Account Operations
 
 ```bash
-# Check your balance
+# Check your spot balance
 npm run ccxt-cli -- account balance binance
+
+# Transfer funds between different accounts, e.g. from spot to future
+npm run ccxt-cli -- account transfer binance --currency USDC --amount 100 --from spot --to future
 
 # Withdraw funds (will prompt for confirmation)
 npm run ccxt-cli -- account withdraw binance BTC 0.01 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
@@ -127,11 +130,18 @@ npm run ccxt-cli -- order create binance BTC/USDT\
 
 ### Testnet/sandbox
 
-Same as above, but for testnet/sandbox use the `-testnet` suffix:
+Same as above, but for testnet/sandbox use the `-testnet` suffix. For example, for spot Binance testnet, you can do:
 
 ```bash
 npm run ccxt-cli -- config add binance-testnet
-npm run ccxt-cli -- order create binance-testnet BTC/USDT --type limit --side buy --amount 0.001 --price 50000
+npm run ccxt-cli -- order create binance-testnet BTC/USDT --type limit --side buy --amount 0.001 --price 100000
+```
+
+For futures testnet, you can do:
+
+```bash
+npm run ccxt-cli -- config add binanceusdm-testnet
+npm run ccxt-cli -- order create binanceusdm-testnet BTC/USDT --type limit --side buy --amount 0.001 --price 100000
 ```
 
 Usually the API keys for testnet/sandbox are not the same as the ones for the mainnet/live environment. For example, on Binance, you need to create them here:

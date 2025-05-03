@@ -1,5 +1,6 @@
 import { getExchange } from '../../utils/exchange';
 import util from 'util';
+
 /**
  * Command to list all methods and functionalities supported by
  * the given exchange indexed by market-type.

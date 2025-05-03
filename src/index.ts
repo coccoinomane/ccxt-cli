@@ -6,6 +6,8 @@ import { setDebugCalls, setDebugHttp } from './utils/debug';
 import { add as configAdd } from './commands/config/add';
 import { list as configList } from './commands/config/list';
 import { balance as accountBalance } from './commands/account/balance';
+import { spotBalance as accountSpotBalance } from './commands/account/balance';
+import { futureBalance as accountFutureBalance } from './commands/account/balance';
 import { transfer as accountTransfer } from './commands/account/transfer';
 import { currencies as marketCurrencies } from './commands/market/currencies';
 import { markets as marketMarkets } from './commands/market/markets';
@@ -75,7 +77,16 @@ marketCommand.command('markets').description('Get active markets supported by an
 // Account commands
 const accountCommand = program.command('account').description('Account operations');
 
-accountCommand.command('balance').description('Get account balance').argument('<exchange>', 'Exchange ID').action(accountBalance);
+accountCommand
+    .command('balance')
+    .description('Get account balance')
+    .argument('<exchange>', 'Exchange ID')
+    .option('--type <type>', 'Account type (default: spot)')
+    .action(accountBalance);
+
+accountCommand.command('spotBalance').description('Get balance for spot account').argument('<exchange>', 'Exchange ID').action(accountSpotBalance);
+
+accountCommand.command('futureBalance').description('Get balance for future account').argument('<exchange>', 'Exchange ID').action(accountFutureBalance);
 
 accountCommand
     .command('transfer')

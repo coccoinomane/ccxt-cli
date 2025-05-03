@@ -20,7 +20,7 @@ export async function transfer(exchangeId: string, options: TransferOptions) {
         const exchange = getAuthenticatedExchange(exchangeId);
 
         if (!exchange.has['transfer']) {
-            throw new Error('Transfer is not supported by this exchange');
+            throw new Error(`Transfer is not supported by ${exchangeId}`);
         }
 
         const allowedAccounts = exchange.options['accountsByType'];
