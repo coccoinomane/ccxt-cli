@@ -6,6 +6,7 @@ import { setDebugCalls, setDebugHttp } from './utils/debug';
 import { add as configAdd } from './commands/config/add';
 import { list as configList } from './commands/config/list';
 import { balance as accountBalance } from './commands/account/balance';
+import { transfer as accountTransfer } from './commands/account/transfer';
 import { currencies as marketCurrencies } from './commands/market/currencies';
 import { markets as marketMarkets } from './commands/market/markets';
 import { ticker as marketTicker } from './commands/market/ticker';
@@ -19,6 +20,7 @@ import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
 import { unsupported as exchangesUnsupported } from './commands/exchanges/unsupported';
+import { accountTypes as exchangesAccountTypes } from './commands/exchanges/accountTypes';
 import { getSupportedOptions } from './utils/commander';
 
 // Initialize commander
@@ -74,6 +76,17 @@ marketCommand.command('markets').description('Get active markets supported by an
 const accountCommand = program.command('account').description('Account operations');
 
 accountCommand.command('balance').description('Get account balance').argument('<exchange>', 'Exchange ID').action(accountBalance);
+
+accountCommand
+    .command('transfer')
+    .description('Transfer funds between accounts, e.g. from spot to future')
+    .argument('<exchange>', 'Exchange ID')
+    .requiredOption('--currency <currency>', 'Currency code')
+    .requiredOption('--amount <amount>', 'Amount to transfer')
+    .requiredOption('--from <from>', 'From account')
+    .requiredOption('--to <to>', 'To account')
+    .option('-f, --force', 'Skip confirmation prompt', false)
+    .action((exchange, options) => accountTransfer(exchange, options));
 
 accountCommand
     .command('withdraw')
@@ -170,6 +183,12 @@ exchangesCommand
     .action(exchangesSupported);
 
 exchangesCommand.command('unsupported').description('List functions NOT supported by an exchange').argument('<exchange>', 'Exchange ID').action(exchangesUnsupported);
+
+exchangesCommand
+    .command('accountTypes')
+    .description('List all account types supported by an exchange (funding, spot, future, main, etc.)')
+    .argument('<exchange>', 'Exchange ID')
+    .action(exchangesAccountTypes);
 
 // Parse command line arguments
 program.parse();
