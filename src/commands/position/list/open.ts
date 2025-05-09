@@ -11,7 +11,6 @@ export async function open(exchangeId: string) {
             process.exit(1);
         }
 
-        // exchange.options['warnOnFetchOpenOrdersWithoutSymbol'] = false;
         const openPositions = await exchange.fetchPositions();
 
         if (openPositions.length === 0) {

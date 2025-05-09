@@ -136,7 +136,7 @@ orderCommand
     .command('cancelAll')
     .description('Cancel all open orders on the given market')
     .argument('<exchange>', 'Exchange ID')
-    .option('--symbol <symbol>', 'Trading pair symbol, required for some exchanges including Binance')
+    .option('--symbol <symbol>', 'Trading pair symbol, to cancel all orders on a specific market')
     .option('-f, --force', 'Skip confirmation prompt', false)
     .action((exchange, options) => orderCancelAll(exchange, options));
 
