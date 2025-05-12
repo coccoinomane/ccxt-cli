@@ -20,6 +20,8 @@ import { cancelAll as orderCancelAll } from './commands/order/cancelAll';
 import { open as orderListOpen } from './commands/order/list/open';
 import { open as positionListOpen } from './commands/position/list/open';
 import { get as positionGet } from './commands/position/get';
+import { close as positionClose } from './commands/position/close';
+import { closeAll as positionCloseAll } from './commands/position/closeAll';
 import { getLeverage as marginGetLeverage } from './commands/margin/getLeverage';
 import { setLeverage as marginSetLeverage } from './commands/margin/setLeverage';
 import { getMarginMode as marginGetMarginMode } from './commands/margin/getMarginMode';
@@ -187,10 +189,23 @@ const positionCommand = program.command('position').description('Manage futures 
 
 positionCommand
     .command('get')
-    .description('Get position for a specific market')
+    .description('Get position on a specific market')
     .argument('<exchange>', 'Exchange ID')
     .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
     .action((exchange, symbol, options) => positionGet(exchange, symbol, options));
+
+positionCommand
+    .command('close')
+    .description('Close a position on a specific market by sending a market order')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .action((exchange, symbol, options) => positionClose(exchange, symbol, options));
+
+positionCommand
+    .command('closeAll')
+    .description('Close all positions on an exchange by sending market orders')
+    .argument('<exchange>', 'Exchange ID')
+    .action((exchange, options) => positionCloseAll(exchange, options));
 
 // Add list subcommand to position
 const positionListCommand = positionCommand.command('list').description('List open positions');
