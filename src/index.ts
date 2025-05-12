@@ -20,6 +20,8 @@ import { cancelAll as orderCancelAll } from './commands/order/cancelAll';
 import { open as orderListOpen } from './commands/order/list/open';
 import { open as positionListOpen } from './commands/position/list/open';
 import { get as positionGet } from './commands/position/get';
+import { getLeverage as marginGetLeverage } from './commands/margin/getLeverage';
+import { setLeverage as marginSetLeverage } from './commands/margin/setLeverage';
 import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
@@ -192,6 +194,25 @@ positionCommand
 const positionListCommand = positionCommand.command('list').description('List open positions');
 
 positionListCommand.command('open').description('List open positions').argument('<exchange>', 'Exchange ID').action(positionListOpen);
+
+// Margin commands
+const marginCommand = program.command('margin').description('Manage margin accounts');
+
+marginCommand
+    .command('leverage')
+    .alias('getLeverage')
+    .description('Get leverage and margin mode for a specific market')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .action(marginGetLeverage);
+
+marginCommand
+    .command('setLeverage')
+    .description('Set leverage for a specific market')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .argument('<leverage>', 'Leverage value, e.g. 20 for 20x')
+    .action(marginSetLeverage);
 
 // Exchanges commands
 const exchangesCommand = program.command('exchanges').description('Get info about supported exchanges');
