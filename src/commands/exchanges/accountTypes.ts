@@ -1,4 +1,4 @@
-import { getExchange } from '../../utils/exchange';
+import { getPublicExchange } from '../../utils/exchange';
 import util from 'util';
 
 /**
@@ -23,6 +23,6 @@ import util from 'util';
  * @link https://docs.ccxt.com/#/README?id=account-types
  */
 export function accountTypes(exchangeId: string) {
-    const exchange = getExchange(exchangeId);
+    const exchange = getPublicExchange(exchangeId);
     console.log(util.inspect(exchange.options['accountsByType'], { depth: null, colors: true }));
 }

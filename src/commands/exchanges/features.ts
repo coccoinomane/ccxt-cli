@@ -1,5 +1,5 @@
-import { getExchange } from '../../utils/exchange';
 import util from 'util';
+import { getPublicExchange } from '../../utils/exchange';
 
 /**
  * Command to list all methods and functionalities supported by
@@ -11,6 +11,6 @@ import util from 'util';
  * @link https://docs.ccxt.com/#/README?id=features
  */
 export function features(exchangeId: string) {
-    const exchange = getExchange(exchangeId);
+    const exchange = getPublicExchange(exchangeId);
     console.log(util.inspect(exchange.features, { depth: null, colors: true }));
 }

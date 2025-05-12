@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { getExchange } from '../../utils/exchange';
+import { getPublicExchange } from '../../utils/exchange';
 
 /**
  * Command to fetch ticker information for a symbol
@@ -7,7 +7,7 @@ import { getExchange } from '../../utils/exchange';
 export async function ticker(exchangeId: string, symbol: string) {
     try {
         // Load markets and fetch ticker
-        const exchange = getExchange(exchangeId);
+        const exchange = getPublicExchange(exchangeId);
         await exchange.loadMarkets();
         const tickerData = await exchange.fetchTicker(symbol);
 

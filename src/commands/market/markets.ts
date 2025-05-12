@@ -1,14 +1,14 @@
 import Table from 'cli-table3';
-import { getExchange } from '../../utils/exchange';
 import chalk from 'chalk';
 import { MarketInterface } from 'ccxt';
+import { getPublicExchange } from '../../utils/exchange';
 
 /**
  * Command to list all active markets supported by the given
  * exchange
  */
 export async function markets(exchangeId: string) {
-    const exchange = getExchange(exchangeId);
+    const exchange = getPublicExchange(exchangeId);
     const markets = await exchange.loadMarkets();
 
     const table = new Table({

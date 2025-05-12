@@ -1,11 +1,11 @@
 import chalk from 'chalk';
-import { getExchange } from '../../utils/exchange';
+import { getPublicExchange } from '../../utils/exchange';
 
 /**
  * Command to list functions supported by a specific exchange
  */
 export function supported(exchangeId: string) {
-    const exchange = getExchange(exchangeId);
+    const exchange = getPublicExchange(exchangeId);
     let supported = 0;
     Object.keys(exchange.has)
         .sort()

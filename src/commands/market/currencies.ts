@@ -1,5 +1,5 @@
 import Table from 'cli-table3';
-import { getExchange } from '../../utils/exchange';
+import { getPublicExchange } from '../../utils/exchange';
 import chalk from 'chalk';
 
 /**
@@ -7,7 +7,7 @@ import chalk from 'chalk';
  * given exchange
  */
 export async function currencies(exchangeId: string) {
-    const exchange = getExchange(exchangeId);
+    const exchange = getPublicExchange(exchangeId);
     await exchange.loadMarkets();
 
     const table = new Table({
