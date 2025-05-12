@@ -22,6 +22,8 @@ import { open as positionListOpen } from './commands/position/list/open';
 import { get as positionGet } from './commands/position/get';
 import { getLeverage as marginGetLeverage } from './commands/margin/getLeverage';
 import { setLeverage as marginSetLeverage } from './commands/margin/setLeverage';
+import { getMarginMode as marginGetMarginMode } from './commands/margin/getMarginMode';
+import { setMarginMode as marginSetMarginMode } from './commands/margin/setMarginMode';
 import { list as exchangesList } from './commands/exchanges/list';
 import { features as exchangesFeatures } from './commands/exchanges/features';
 import { supported as exchangesSupported } from './commands/exchanges/supported';
@@ -201,18 +203,34 @@ const marginCommand = program.command('margin').description('Manage margin accou
 marginCommand
     .command('leverage')
     .alias('getLeverage')
-    .description('Get leverage and margin mode for a specific market')
+    .description('Get user leverage and margin mode for a specific market')
     .argument('<exchange>', 'Exchange ID')
     .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
     .action(marginGetLeverage);
 
 marginCommand
     .command('setLeverage')
-    .description('Set leverage for a specific market')
+    .description('Set user leverage for a specific market')
     .argument('<exchange>', 'Exchange ID')
     .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
     .argument('<leverage>', 'Leverage value, e.g. 20 for 20x')
     .action(marginSetLeverage);
+
+marginCommand
+    .command('marginMode')
+    .alias('getMarginMode')
+    .description('Get user margin mode for a specific market')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .action(marginGetMarginMode);
+
+marginCommand
+    .command('setMarginMode')
+    .description('Set user margin mode for a specific market')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .argument('<marginMode>', 'Margin mode (cross/isolated)')
+    .action(marginSetMarginMode);
 
 // Exchanges commands
 const exchangesCommand = program.command('exchanges').description('Get info about supported exchanges');
