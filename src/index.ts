@@ -10,7 +10,8 @@ import { spotBalance as accountSpotBalance } from './commands/account/balance';
 import { futureBalance as accountFutureBalance } from './commands/account/balance';
 import { transfer as accountTransfer } from './commands/account/transfer';
 import { currencies as marketCurrencies } from './commands/market/currencies';
-import { markets as marketMarkets } from './commands/market/markets';
+import { list as marketList } from './commands/market/list';
+import { get as marketGet } from './commands/market/get';
 import { ticker as marketTicker } from './commands/market/ticker';
 import { withdraw as accountWithdraw } from './commands/account/withdraw';
 import { create as orderCreate } from './commands/order/create';
@@ -80,7 +81,14 @@ marketCommand
 
 marketCommand.command('currencies').description('Get active currencies supported by an exchange').argument('<exchange>', 'Exchange ID').action(marketCurrencies);
 
-marketCommand.command('markets').description('Get active markets supported by an exchange').argument('<exchange>', 'Exchange ID').action(marketMarkets);
+marketCommand.command('list').description('Get active markets supported by an exchange').argument('<exchange>', 'Exchange ID').action(marketList);
+
+marketCommand
+    .command('get')
+    .description('Get active markets supported by an exchange')
+    .argument('<exchange>', 'Exchange ID')
+    .argument('<symbol>', 'Trading pair symbol (e.g., BTC/USDT)')
+    .action(marketGet);
 
 // Account commands
 const accountCommand = program.command('account').description('Account operations');

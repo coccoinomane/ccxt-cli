@@ -71,13 +71,16 @@ npm run ccxt-cli -- exchanges unsupported binance
 
 ```bash
 # Fetch all active markets supported by an exchange
-npm run ccxt-cli -- market markets binance
+npm run ccxt-cli -- market list binance
+
+# Fetch details and limits about a specific market
+npm run ccxt-cli -- market get binance BTC/USDT
+
+# Fetch price and volume info for a specific market
+npm run ccxt-cli -- market ticker binance BTC/USDT
 
 # Fetch all active currencies supported by an exchange
 npm run ccxt-cli -- market currencies binance
-
-# Fetch ticker info for a specific market
-npm run ccxt-cli -- market ticker binance BTC/USDT
 ```
 
 ### Account Operations

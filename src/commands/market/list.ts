@@ -7,7 +7,7 @@ import { getPublicExchange } from '../../utils/exchange';
  * Command to list all active markets supported by the given
  * exchange
  */
-export async function markets(exchangeId: string) {
+export async function list(exchangeId: string) {
     const exchange = getPublicExchange(exchangeId);
     const markets = await exchange.loadMarkets();
 
